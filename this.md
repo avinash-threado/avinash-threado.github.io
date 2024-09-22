@@ -426,3 +426,159 @@ document.getElementById('my-button').addEventListener('click', () => {
 });
 ```
 
+
+# Other notes from video
+
+-  `this` in global space // window
+- this inside a function
+```
+function x() {
+  console.log(this);
+}
+x();
+// the `this` corresponds to window object
+```
+
+and 
+
+```
+'use strict';
+function x() {
+  console.log(this);
+}
+x();
+// this is undefined
+```
+#### Explaination
+- `this substitution` : In non-strict mode, whenever the value of this is undefined or null it's replaced by global object, in our case window object
+- the value of `this` inside a function is undefined but due to `this substitution` it's value is replaced
+
+### Another example
+- **Concept**: *The value of this keyword depends on how the function is called*
+- In the following code snipets
+```
+'use strict';
+function x() {
+  console.log(this);
+}
+x(); // undefined
+window.x() // window
+```
+### Explaination
+- If the function is called without any reference of an object then it's undefined
+- While when use window as the ***calling object*** then this becomes window
+during ***runtime binding***
+
+
+- ***The this keyword refers to the context where a piece of code, such as a function's body, is supposed to run***. Most typically, it is used in object methods, where this refers to the object that the method is attached to, thus allowing the same method to be reused on different objects.
+
+- ***The value of this in JavaScript depends on how a function is invoked (runtime binding), not how it is defined.*** 
+
+- When a regular function is invoked as a method of an object (obj.method()), this points to that object. 
+- When invoked as a standalone function (not attached to an object: func()), this typically refers to the global object (in non-strict mode) or undefined (in strict mode). 
+- The Function.prototype.bind() method can create a function whose this binding doesn't change, and methods Function.prototype.apply() and Function.prototype.call() can also set the this value for a particular call.
+
+- Arrow functions differ in their handling of this: they inherit this from the parent scope at the time they are defined. This behavior makes arrow functions particularly useful for callbacks and preserving context. ***However, arrow functions do not have their own this binding. Therefore, their this value cannot be set by bind(), apply() or call() methods, nor does it point to the current object in object methods.***
+
+# Other notes from video[cont.]
+
+- `this` inside object`s method
+
+```
+If a function is a part of any object then it's called a method
+```
+
+```
+const obj = {
+  a: 10,
+  x: function() {
+    console.log(this);
+  }
+}
+
+obj.x(); // this is obj
+let val = obj.x;
+val(); // window
+
+Output:
+obj.x();
+
+The method x is called as a method of obj, so in non-strict mode, this will refer to obj.
+
+Output: this { a: 10, x: [Function: x] }
+val();
+
+- When x is assigned to val and then called, it is no longer tied to obj. In non-strict mode, when a function is invoked like this, this defaults to the global object (window in browsers or global in Node.js).
+
+Output: this Window (in browsers) or this global (in Node.js).
+
+Explanation:
+In non-strict mode, if a function is called as a method of an object, this refers to that object.
+
+However, when the function is detached from the object and called on its own, this defaults to the global object (window or global), not undefined as it would in strict mode.
+
+```
+
+Other notes from video[cont.]
+- Call apply bind methods (sharing methods)
+- `this` inside arrow functions
+
+```
+const obj2 = {
+  a: 5,
+  x : function() {
+    const yn =  () => {
+      console.log(this.a);
+    };
+    yn();
+  }
+}
+obj2.x();
+let v = obj2.x;
+console.log(v);
+v();
+
+5
+THIS IN ARROW FUNCTIONS:44 ƒ () {
+        const yn = () => {
+            console.log(this.a);
+        }
+        ;
+        yn();
+    }
+THIS IN ARROW FUNCTIONS:36 undefined
+VM110 THIS IN ARROW FUNCTIONS:1 undefined
+
+```
+
+```
+Output:
+console.log(v);:
+
+You assign obj2.x to v. Since obj2.x is a function, v is a reference to this function.
+Output:
+javascript
+Copy code
+[Function: x]
+v();:
+
+Here, you are calling v() (which is obj2.x), but now it's detached from obj2. Normally, in non-strict mode, when you invoke a function this way, this would refer to the global object.
+
+However, arrow functions capture this from their lexical scope, meaning that yn() inside x retains the this value from the surrounding function x.
+
+Because v() is called in the global context, this will refer to the global object (window in browsers or global in Node.js). Since the global object doesn’t have an a property, this.a is undefined.
+
+Output:
+
+javascript
+Copy code
+undefined
+Explanation:
+When you use an arrow function like yn(), it doesn't have its own this but instead uses this from the surrounding function (x).
+Since v() is called in the global context, this.a inside yn() refers to global.a (or window.a), which is undefined because the global object doesn't have an a property.
+```
+
+
+Other notes from video[cont.]
+- `this` inside DOM elements
+- reference to HTML element
